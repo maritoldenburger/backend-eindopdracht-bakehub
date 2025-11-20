@@ -3,6 +3,9 @@ package nl.maritoldenburger.bakehub.models;
 import jakarta.persistence.*;
 import nl.maritoldenburger.bakehub.enums.Role;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 
@@ -24,13 +27,19 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
-    public User() {}
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favorite> favorites;
+
+    public User() {
+        this.favorites = new ArrayList<>();
+    }
 
     public User(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.favorites = new ArrayList<>();
     }
 
     public Long getId() {
@@ -67,5 +76,13 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(List<Favorite> favorites) {
+        this.favorites = favorites;
     }
 }
