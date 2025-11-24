@@ -14,6 +14,7 @@ public class RecipeDto {
     public String instructions;
     public int servings;
     public int preparationTime;
+    public Double rating;
     public CategoryDto category;
     public List<IngredientDto> ingredients;
     public List<ReviewDto> reviews;

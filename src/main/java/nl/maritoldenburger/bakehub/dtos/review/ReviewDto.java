@@ -6,6 +6,6 @@ public class ReviewDto {
     public int rating;
     public String comment;
     public String imageUrl;
-    public Long userId;
+    public String username;
     public Long recipeId;
 }
