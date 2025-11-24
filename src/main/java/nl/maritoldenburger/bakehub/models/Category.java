@@ -2,6 +2,7 @@ package nl.maritoldenburger.bakehub.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,10 +19,11 @@ public class Category {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private String imageUrl;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Recipe> recipes;
+    private List<Recipe> recipes = new ArrayList<>();
 
     public Category() {}
 

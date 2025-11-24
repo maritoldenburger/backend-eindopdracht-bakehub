@@ -28,10 +28,9 @@ public class User {
     private Role role = Role.USER;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Favorite> favorites;
+    private List<Favorite> favorites = new ArrayList<>();
 
     public User() {
-        this.favorites = new ArrayList<>();
     }
 
     public User(String username, String email, String password, Role role) {
@@ -39,7 +38,6 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.favorites = new ArrayList<>();
     }
 
     public Long getId() {
