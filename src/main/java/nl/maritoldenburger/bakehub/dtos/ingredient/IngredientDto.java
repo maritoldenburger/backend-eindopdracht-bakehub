@@ -7,6 +7,4 @@ public class IngredientDto {
     public String name;
     public Double quantity;
     public Unit unit;
-    public Long recipeId;
-
 }
