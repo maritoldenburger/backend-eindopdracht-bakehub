@@ -1,6 +1,9 @@
 package nl.maritoldenburger.bakehub.services;
 
+import nl.maritoldenburger.bakehub.dtos.favorite.FavoriteDto;
+import nl.maritoldenburger.bakehub.dtos.favorite.FavoriteInputDto;
 import nl.maritoldenburger.bakehub.exceptions.RecordNotFoundException;
+import nl.maritoldenburger.bakehub.mappers.FavoriteMapper;
 import nl.maritoldenburger.bakehub.models.Favorite;
 import nl.maritoldenburger.bakehub.models.Recipe;
 import nl.maritoldenburger.bakehub.models.User;
@@ -9,6 +12,7 @@ import nl.maritoldenburger.bakehub.repositories.RecipeRepository;
 import nl.maritoldenburger.bakehub.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,30 +23,43 @@ public class FavoriteService {
     private final RecipeRepository recipeRepository;
 
     public FavoriteService(FavoriteRepository favoriteRepository, UserRepository userRepository, RecipeRepository recipeRepository) {
+
         this.favoriteRepository = favoriteRepository;
         this.userRepository = userRepository;
         this.recipeRepository = recipeRepository;
     }
 
-    public List<Favorite> getFavoritesByUser(Long userId) {
+    public List<FavoriteDto> getFavoritesByUser(Long userId) {
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RecordNotFoundException("User " + userId + " not found"));
 
-        return user.getFavorites();
+        List<FavoriteDto> dtoFavorites = new ArrayList<>();
+
+        for (Favorite favorite : user.getFavorites()) {
+            dtoFavorites.add(FavoriteMapper.toDto(favorite));
+        }
+
+        return dtoFavorites;
     }
 
-    public Favorite addFavorite(Long userId, Long recipeId) {
+    public FavoriteDto addFavorite(Long userId, FavoriteInputDto favoriteInputDto) {
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RecordNotFoundException("User " + userId + " not found"));
 
-        Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new RecordNotFoundException("Recipe " + recipeId + " not found"));
+        Recipe recipe = recipeRepository.findById(favoriteInputDto.recipeId)
+                .orElseThrow(() -> new RecordNotFoundException("Recipe " + favoriteInputDto.recipeId + " not found"));
 
         Favorite favorite = new Favorite(user, recipe);
-        return favoriteRepository.save(favorite);
+        Favorite savedFavorite = favoriteRepository.save(favorite);
+
+
+        return FavoriteMapper.toDto(savedFavorite);
     }
 
     public void deleteFavorite(Long id) {
+
         Favorite favorite = favoriteRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Favorite " + id + " not found"));
         favoriteRepository.delete(favorite);
