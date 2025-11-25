@@ -1,8 +1,13 @@
 package nl.maritoldenburger.bakehub.controllers;
 
+import nl.maritoldenburger.bakehub.dtos.category.CategoryDto;
+import nl.maritoldenburger.bakehub.dtos.category.CategoryInputDto;
 import nl.maritoldenburger.bakehub.services.CategoryService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
@@ -14,14 +19,33 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    //todo - get all categories
+    @GetMapping
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
+    }
 
-    //todo - get category by id
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
+        CategoryDto category = categoryService.getCategoryById(id);
+        return ResponseEntity.ok(category);
+    }
 
-    //todo - add recipe
+    @PostMapping
+    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryInputDto categoryInputDto) {
+        CategoryDto savedCategory = categoryService.addCategory(categoryInputDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
+    }
 
-    //todo - update recipe
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @RequestBody CategoryInputDto categoryInputDto) {
+        CategoryDto updatedCategory = categoryService.updateCategory(id, categoryInputDto);
+        return ResponseEntity.ok(updatedCategory);
+    }
 
-    //todo - delete recipe
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
+    }
 }
