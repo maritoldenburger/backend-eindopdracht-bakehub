@@ -1,12 +1,18 @@
 package nl.maritoldenburger.bakehub.services;
 
+import nl.maritoldenburger.bakehub.dtos.ingredient.IngredientInputDto;
+import nl.maritoldenburger.bakehub.dtos.recipe.RecipeDto;
+import nl.maritoldenburger.bakehub.dtos.recipe.RecipeInputDto;
 import nl.maritoldenburger.bakehub.exceptions.RecordNotFoundException;
+import nl.maritoldenburger.bakehub.mappers.RecipeMapper;
 import nl.maritoldenburger.bakehub.models.Category;
 import nl.maritoldenburger.bakehub.models.Recipe;
+import nl.maritoldenburger.bakehub.models.Review;
 import nl.maritoldenburger.bakehub.repositories.CategoryRepository;
 import nl.maritoldenburger.bakehub.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,50 +20,88 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final CategoryRepository categoryRepository;
+    private final IngredientService ingredientService;
 
-    public RecipeService(RecipeRepository recipeRepository, CategoryRepository categoryRepository) {
+    public RecipeService(RecipeRepository recipeRepository, CategoryRepository categoryRepository, IngredientService ingredientService) {
         this.recipeRepository = recipeRepository;
         this.categoryRepository = categoryRepository;
+        this.ingredientService = ingredientService;
+
     }
 
-    public List<Recipe> getAllRecipes() {
-        return recipeRepository.findAll();
+    public List<RecipeDto> getAllRecipes() {
+
+        List<Recipe> recipes = recipeRepository.findAll();
+        List<RecipeDto> dtoRecipes = new ArrayList<>();
+
+        for (Recipe recipe : recipes) {
+            dtoRecipes.add(RecipeMapper.toDto(recipe));
+        }
+        return dtoRecipes;
     }
 
-    public Recipe getRecipeById(Long id) {
-        return recipeRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Recipe " + id + " not found"));
-    }
+    public RecipeDto getRecipeById(Long id) {
 
-    public List<Recipe> getRecipesByCategory(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RecordNotFoundException("Category " + categoryId + " not found"));
-        return category.getRecipes();
-    }
-
-    //todo
-    //zoekfunctie toevoegen?
-
-    public Recipe addRecipe(Recipe recipe, Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RecordNotFoundException("Category " + categoryId + " not found"));
-
-        recipe.setCategory(category);
-        return recipeRepository.save(recipe);
-    }
-
-    public Recipe updateRecipe(Long id, Recipe updated) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Recipe " + id + " not found"));
 
-        recipe.setName(updated.getName());
-        recipe.setImageUrl(updated.getImageUrl());
-        recipe.setDescription(updated.getDescription());
-        recipe.setInstructions(updated.getInstructions());
-        recipe.setServings(updated.getServings());
-        recipe.setPreparationTime(updated.getPreparationTime());
+        return RecipeMapper.toDto(recipe);
+    }
 
-        return recipeRepository.save(recipe);
+    public List<RecipeDto> getRecipesByCategory(Long categoryId) {
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RecordNotFoundException("Category " + categoryId + " not found"));
+
+        List<RecipeDto> dtoRecipes = new ArrayList<>();
+
+        for (Recipe recipe : category.getRecipes()) {
+            dtoRecipes.add(RecipeMapper.toDto(recipe));
+        }
+        return dtoRecipes;
+    }
+
+    public List<RecipeDto> searchRecipe(String query) {
+
+        List<Recipe> recipes = recipeRepository.findByNameContainingIgnoreCase(query);
+        List<RecipeDto> foundRecipes = new ArrayList<>();
+
+        for (Recipe recipe : recipes) {
+            foundRecipes.add(RecipeMapper.toDto(recipe));
+        }
+        return foundRecipes;
+    }
+
+    public RecipeDto addRecipe(RecipeInputDto recipeInputDto, Long categoryId) {
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RecordNotFoundException("Category " + categoryId + " not found"));
+
+        Recipe recipe = RecipeMapper.toEntity(recipeInputDto);
+        recipe.setCategory(category);
+        Recipe savedRecipe = recipeRepository.save(recipe);
+
+        for (IngredientInputDto ingredientDto : recipeInputDto.ingredients) {
+            ingredientService.addIngredient(savedRecipe.getId(), ingredientDto);
+        }
+        return getRecipeById(savedRecipe.getId());
+    }
+
+    public RecipeDto updateRecipe(Long id, RecipeInputDto recipeInputDto) {
+
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Recipe " + id + " not found"));
+
+        recipe.setName(recipeInputDto.name);
+        recipe.setImageUrl(recipeInputDto.imageUrl);
+        recipe.setDescription(recipeInputDto.description);
+        recipe.setInstructions(recipeInputDto.instructions);
+        recipe.setServings(recipeInputDto.servings);
+        recipe.setPreparationTime(recipeInputDto.preparationTime);
+
+        Recipe updatedRecipe = recipeRepository.save(recipe);
+
+        return RecipeMapper.toDto(updatedRecipe);
     }
 
     public void deleteRecipe(Long id) {
@@ -67,13 +111,21 @@ public class RecipeService {
     }
 
     public void updateRecipeRating(Recipe recipe) {
-        double avg = recipe.getReviews()
-                .stream()
-                .mapToInt(r -> r.getRating())
-                .average()
-                .orElse(0.0);
 
-        recipe.setRating(avg);
+        List<Review> reviews = recipe.getReviews();
+
+        if (reviews.isEmpty()) {
+            recipe.setRating(0.0);
+        } else {
+            int totalRating = 0;
+
+            for (Review review : reviews) {
+                totalRating += review.getRating();
+            }
+
+            double average = (double) totalRating / reviews.size();
+            recipe.setRating(average);
+        }
         recipeRepository.save(recipe);
     }
 }

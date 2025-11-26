@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 
 public class ReviewInputDto {
 
-    @NotNull
     @Min(1)
     @Max(5)
     public Integer rating;

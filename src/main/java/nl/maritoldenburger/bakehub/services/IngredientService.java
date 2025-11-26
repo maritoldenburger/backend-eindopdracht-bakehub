@@ -1,12 +1,16 @@
 package nl.maritoldenburger.bakehub.services;
 
+import nl.maritoldenburger.bakehub.dtos.ingredient.IngredientDto;
+import nl.maritoldenburger.bakehub.dtos.ingredient.IngredientInputDto;
 import nl.maritoldenburger.bakehub.exceptions.RecordNotFoundException;
+import nl.maritoldenburger.bakehub.mappers.IngredientMapper;
 import nl.maritoldenburger.bakehub.models.Ingredient;
 import nl.maritoldenburger.bakehub.models.Recipe;
 import nl.maritoldenburger.bakehub.repositories.IngredientRepository;
 import nl.maritoldenburger.bakehub.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,35 +24,52 @@ public class IngredientService {
         this.recipeRepository = recipeRepository;
     }
 
-    public List<Ingredient> getAllIngredients() {
-        return ingredientRepository.findAll();
+    public List<IngredientDto> getAllIngredients() {
+
+        List<Ingredient> ingredients = ingredientRepository.findAll();
+        List<IngredientDto> dtoIngredients = new ArrayList<>();
+
+        for (Ingredient ingredient : ingredients) {
+            dtoIngredients.add(IngredientMapper.toDto(ingredient));
+        }
+        return dtoIngredients;
     }
 
-    public Ingredient getIngredient(Long id) {
-        return ingredientRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Ingredient " + id + " not found"));
-    }
+    public IngredientDto getIngredientById(Long id) {
 
-    public Ingredient addIngredient(Ingredient ingredient, Long recipeId) {
-        Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new RecordNotFoundException("Recipe " + recipeId + " not found"));
-
-        ingredient.setRecipe(recipe);
-        return ingredientRepository.save(ingredient);
-    }
-
-    public Ingredient updateIngredient(Long id, Ingredient updated) {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Ingredient " + id + " not found"));
 
-        ingredient.setName(updated.getName());
-        ingredient.setQuantity(updated.getQuantity());
-        ingredient.setUnit(updated.getUnit());
+        return IngredientMapper.toDto(ingredient);
+    }
 
-        return ingredientRepository.save(ingredient);
+    public IngredientDto addIngredient(Long recipeId, IngredientInputDto ingredientInputDto) {
+
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new RecordNotFoundException("Recipe " + recipeId + " not found"));
+
+        Ingredient ingredient = IngredientMapper.toEntity(ingredientInputDto, recipe);
+
+        Ingredient savedIngredient = ingredientRepository.save(ingredient);
+        return IngredientMapper.toDto(savedIngredient);
+    }
+
+    public IngredientDto updateIngredient(Long id, IngredientInputDto ingredientInputDto) {
+
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Ingredient " + id + " not found"));
+
+        ingredient.setName(ingredientInputDto.name);
+        ingredient.setQuantity(ingredientInputDto.quantity);
+        ingredient.setUnit(ingredientInputDto.unit);
+
+        Ingredient updatedIngredient = ingredientRepository.save(ingredient);
+
+        return IngredientMapper.toDto(updatedIngredient);
     }
 
     public void deleteIngredient(Long id) {
+
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Ingredient " + id + " not found"));
         ingredientRepository.delete(ingredient);

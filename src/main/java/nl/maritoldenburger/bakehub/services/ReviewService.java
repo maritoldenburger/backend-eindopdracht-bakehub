@@ -1,6 +1,9 @@
 package nl.maritoldenburger.bakehub.services;
 
+import nl.maritoldenburger.bakehub.dtos.review.ReviewDto;
+import nl.maritoldenburger.bakehub.dtos.review.ReviewInputDto;
 import nl.maritoldenburger.bakehub.exceptions.RecordNotFoundException;
+import nl.maritoldenburger.bakehub.mappers.ReviewMapper;
 import nl.maritoldenburger.bakehub.models.Recipe;
 import nl.maritoldenburger.bakehub.models.Review;
 import nl.maritoldenburger.bakehub.models.User;
@@ -9,6 +12,7 @@ import nl.maritoldenburger.bakehub.repositories.ReviewRepository;
 import nl.maritoldenburger.bakehub.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,27 +30,32 @@ public class ReviewService {
         this.recipeService = recipeService;
     }
 
-    public List<Review> getReviewsByRecipe(Long recipeId) {
+    public List<ReviewDto> getReviewsByRecipe(Long recipeId) {
+
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecordNotFoundException("Recipe " + recipeId + " not found"));
-        return recipe.getReviews();
+
+        List<ReviewDto> dtoReviews = new ArrayList<>();
+
+        for (Review review : recipe.getReviews()) {
+            dtoReviews.add(ReviewMapper.toDto(review));
+        }
+        return dtoReviews;
     }
 
-    public Review addReview(Long userId, Long recipeId, Review data) {
+    public ReviewDto addReview(Long userId, Long recipeId, ReviewInputDto reviewInputDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RecordNotFoundException("User " + userId + " not found"));
 
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecordNotFoundException("Recipe " + recipeId + " not found"));
 
-        data.setUser(user);
-        data.setRecipe(recipe);
-
-        Review savedReview = reviewRepository.save(data);
+        Review review = ReviewMapper.toEntity(reviewInputDto, user, recipe);
+        Review savedReview = reviewRepository.save(review);
 
         recipeService.updateRecipeRating(recipe);
 
-        return savedReview;
+        return ReviewMapper.toDto(savedReview);
     }
 
     public void deleteReview(Long id) {

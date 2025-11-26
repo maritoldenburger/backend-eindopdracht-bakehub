@@ -19,7 +19,7 @@ public class Category {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Column
     private String imageUrl;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
