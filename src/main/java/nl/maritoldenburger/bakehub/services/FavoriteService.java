@@ -2,6 +2,7 @@ package nl.maritoldenburger.bakehub.services;
 
 import nl.maritoldenburger.bakehub.dtos.favorite.FavoriteDto;
 import nl.maritoldenburger.bakehub.dtos.favorite.FavoriteInputDto;
+import nl.maritoldenburger.bakehub.exceptions.AlreadyExistsException;
 import nl.maritoldenburger.bakehub.exceptions.RecordNotFoundException;
 import nl.maritoldenburger.bakehub.mappers.FavoriteMapper;
 import nl.maritoldenburger.bakehub.models.Favorite;
@@ -50,6 +51,10 @@ public class FavoriteService {
 
         Recipe recipe = recipeRepository.findById(favoriteInputDto.recipeId)
                 .orElseThrow(() -> new RecordNotFoundException("Recipe " + favoriteInputDto.recipeId + " not found"));
+
+        if (favoriteRepository.existsByUserAndRecipe(user, recipe)) {
+            throw new AlreadyExistsException("Recipe has already been saved to favorites");
+        }
 
         Favorite favorite = new Favorite(user, recipe);
         Favorite savedFavorite = favoriteRepository.save(favorite);
