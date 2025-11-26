@@ -37,6 +37,12 @@ public class RecipeController {
         return ResponseEntity.ok(recipes);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<RecipeDto>> searchRecipe(@RequestParam String query) {
+        List<RecipeDto> foundRecipes = recipeService.searchRecipe(query);
+        return ResponseEntity.ok(foundRecipes);
+    }
+
     @PostMapping("/category/{categoryId}")
     public ResponseEntity<RecipeDto> addRecipe(@RequestBody RecipeInputDto recipeInputDto, @PathVariable Long categoryId) {
         RecipeDto savedRecipe = recipeService.addRecipe(recipeInputDto, categoryId);
@@ -54,8 +60,6 @@ public class RecipeController {
         recipeService.deleteRecipe(id);
         return ResponseEntity.noContent().build();
     }
-
-    //todo - search functie
 
     //todo - filter functie (rating + prep time?)
 }

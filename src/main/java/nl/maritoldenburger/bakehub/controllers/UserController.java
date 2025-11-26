@@ -2,9 +2,7 @@ package nl.maritoldenburger.bakehub.controllers;
 
 import nl.maritoldenburger.bakehub.dtos.user.UserDto;
 import nl.maritoldenburger.bakehub.dtos.user.UserInputDto;
-import nl.maritoldenburger.bakehub.models.User;
 import nl.maritoldenburger.bakehub.services.UserService;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

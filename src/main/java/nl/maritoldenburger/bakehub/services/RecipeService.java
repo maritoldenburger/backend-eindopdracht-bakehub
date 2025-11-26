@@ -57,8 +57,16 @@ public class RecipeService {
         return dtoRecipes;
     }
 
-    //todo
-    //zoekfunctie toevoegen?
+    public List<RecipeDto> searchRecipe(String query) {
+
+        List<Recipe> recipes = recipeRepository.findByNameContainingIgnoreCase(query);
+        List<RecipeDto> foundRecipes = new ArrayList<>();
+
+        for (Recipe recipe : recipes) {
+            foundRecipes.add(RecipeMapper.toDto(recipe));
+        }
+        return foundRecipes;
+    }
 
     public RecipeDto addRecipe(RecipeInputDto recipeInputDto, Long categoryId) {
 
