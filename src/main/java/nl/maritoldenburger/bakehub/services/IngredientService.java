@@ -49,7 +49,6 @@ public class IngredientService {
                 .orElseThrow(() -> new RecordNotFoundException("Recipe " + recipeId + " not found"));
 
         Ingredient ingredient = IngredientMapper.toEntity(ingredientInputDto, recipe);
-        ingredient.setRecipe(recipe);
 
         Ingredient savedIngredient = ingredientRepository.save(ingredient);
         return IngredientMapper.toDto(savedIngredient);

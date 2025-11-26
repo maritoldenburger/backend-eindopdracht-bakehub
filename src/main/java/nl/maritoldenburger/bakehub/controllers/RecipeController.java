@@ -60,6 +60,4 @@ public class RecipeController {
         recipeService.deleteRecipe(id);
         return ResponseEntity.noContent().build();
     }
-
-    //todo - filter functie (rating + prep time?)
 }

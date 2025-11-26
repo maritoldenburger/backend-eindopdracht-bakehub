@@ -1,5 +1,6 @@
 package nl.maritoldenburger.bakehub.services;
 
+import nl.maritoldenburger.bakehub.dtos.ingredient.IngredientInputDto;
 import nl.maritoldenburger.bakehub.dtos.recipe.RecipeDto;
 import nl.maritoldenburger.bakehub.dtos.recipe.RecipeInputDto;
 import nl.maritoldenburger.bakehub.exceptions.RecordNotFoundException;
@@ -19,10 +20,13 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final CategoryRepository categoryRepository;
+    private final IngredientService ingredientService;
 
-    public RecipeService(RecipeRepository recipeRepository, CategoryRepository categoryRepository) {
+    public RecipeService(RecipeRepository recipeRepository, CategoryRepository categoryRepository, IngredientService ingredientService) {
         this.recipeRepository = recipeRepository;
         this.categoryRepository = categoryRepository;
+        this.ingredientService = ingredientService;
+
     }
 
     public List<RecipeDto> getAllRecipes() {
@@ -77,7 +81,10 @@ public class RecipeService {
         recipe.setCategory(category);
         Recipe savedRecipe = recipeRepository.save(recipe);
 
-        return RecipeMapper.toDto(savedRecipe);
+        for (IngredientInputDto ingredientDto : recipeInputDto.ingredients) {
+            ingredientService.addIngredient(savedRecipe.getId(), ingredientDto);
+        }
+        return getRecipeById(savedRecipe.getId());
     }
 
     public RecipeDto updateRecipe(Long id, RecipeInputDto recipeInputDto) {
@@ -116,7 +123,7 @@ public class RecipeService {
                 totalRating += review.getRating();
             }
 
-            double average = totalRating / reviews.size();
+            double average = (double) totalRating / reviews.size();
             recipe.setRating(average);
         }
         recipeRepository.save(recipe);

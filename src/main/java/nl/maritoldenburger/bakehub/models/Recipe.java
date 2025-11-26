@@ -28,7 +28,7 @@ public class Recipe {
 
     private int preparationTime;
 
-    private Double rating;
+    private Double rating = 0.0;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

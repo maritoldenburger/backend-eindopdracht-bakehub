@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/review")
+@RequestMapping("/recipes/{recipeId}/reviews")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -25,10 +25,10 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
-    @PostMapping("/user/{userId}")
-    public ResponseEntity<ReviewDto> addReview(@PathVariable Long userId, @RequestBody Long recipeId, @RequestBody ReviewInputDto reviewInputDto) {
-        ReviewDto reviewDto = reviewService.addReview(userId, recipeId, reviewInputDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(reviewDto);
+    @PostMapping
+    public ResponseEntity<ReviewDto> addReview(@PathVariable Long recipeId, @RequestBody ReviewInputDto reviewInputDto) {
+        ReviewDto savedReview = reviewService.addReview(reviewInputDto.userId, recipeId, reviewInputDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedReview);
     }
 
     @DeleteMapping("/{id}")
