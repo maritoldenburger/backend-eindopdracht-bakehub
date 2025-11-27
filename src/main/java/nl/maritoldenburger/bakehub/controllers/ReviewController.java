@@ -27,8 +27,8 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ReviewDto> addReview(@PathVariable Long recipeId, @RequestBody ReviewInputDto reviewInputDto) {
-        ReviewDto savedReview = reviewService.addReview(reviewInputDto.userId, recipeId, reviewInputDto);
+    public ResponseEntity<ReviewDto> addReview(@PathVariable Long recipeId, @RequestBody ReviewInputDto reviewInputDto, Principal principal) {
+        ReviewDto savedReview = reviewService.addReview(principal.getName(), recipeId, reviewInputDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedReview);
     }
 

@@ -44,9 +44,9 @@ public class ReviewService {
         return dtoReviews;
     }
 
-    public ReviewDto addReview(Long userId, Long recipeId, ReviewInputDto reviewInputDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RecordNotFoundException("User " + userId + " not found"));
+    public ReviewDto addReview(String username, Long recipeId, ReviewInputDto reviewInputDto) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RecordNotFoundException("User " + username + " not found"));
 
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecordNotFoundException("Recipe " + recipeId + " not found"));
