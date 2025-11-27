@@ -1,4 +1,4 @@
--- elke wachtwoord is test123
+-- elk wachtwoord is test123
 
 INSERT INTO users (username, email, password)
 VALUES ('annie_ananas', 'annieananas@bakehub.com', '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W'),
