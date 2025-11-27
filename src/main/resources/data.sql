@@ -1,10 +1,21 @@
-INSERT INTO users (username, email, password, role)
-VALUES ('annie_ananas', 'annieananas@bakehub.com', 'wachtwoord123', 'USER'),
-       ('bobbybanaan', 'bobbiebanaan@bakehub.com', 'wachtwoord123', 'USER'),
-       ('wendywatermeloen', 'wendywatermeloen@bakehub.com', 'wachtwoord123', 'ADMIN'),
-       ('lolalimoen95', 'lolalimoen@bakehub.com', 'wachtwoord123', 'USER'),
-       ('fredframb00s', 'fredframboos@bakehub.com', 'wachtwoord123', 'ADMIN'),
-       ('brambrownie', 'brambrownie@bakehub.com', 'wachtwoord123', 'ADMIN');
+-- elke wachtwoord is test123
+
+INSERT INTO users (username, email, password)
+VALUES ('annie_ananas', 'annieananas@bakehub.com', '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W'),
+       ('bobbybanaan', 'bobbiebanaan@bakehub.com', '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W'),
+       ('wendywatermeloen', 'wendywatermeloen@bakehub.com',
+        '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W'),
+       ('lolalimoen95', 'lolalimoen@bakehub.com', '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W'),
+       ('fredframb00s', 'fredframboos@bakehub.com', '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W'),
+       ('brambrownie', 'brambrownie@bakehub.com', '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W');
+
+INSERT INTO authorities (username, authority)
+VALUES ('annie_ananas', 'USER'),
+       ('bobbybanaan', 'USER'),
+       ('wendywatermeloen', 'ADMIN'),
+       ('lolalimoen95', 'USER'),
+       ('fredframb00s', 'ADMIN'),
+       ('brambrownie', 'ADMIN');
 
 INSERT INTO categories (name, description, image_url)
 VALUES ('taart',
