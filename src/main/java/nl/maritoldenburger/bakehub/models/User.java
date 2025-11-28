@@ -28,10 +28,10 @@ public class User {
 
     @OneToMany(
             targetEntity = Authority.class,
-            mappedBy = "username",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.EAGER)
+    @JoinColumn(name = "username", referencedColumnName = "username")
     private Set<Authority> authorities = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

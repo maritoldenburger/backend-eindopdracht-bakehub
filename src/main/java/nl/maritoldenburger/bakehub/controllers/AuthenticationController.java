@@ -2,6 +2,7 @@ package nl.maritoldenburger.bakehub.controllers;
 
 import nl.maritoldenburger.bakehub.dtos.authentication.AuthenticationRequest;
 import nl.maritoldenburger.bakehub.dtos.authentication.AuthenticationResponse;
+import nl.maritoldenburger.bakehub.exceptions.BadRequestException;
 import nl.maritoldenburger.bakehub.utils.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,8 +46,8 @@ public class AuthenticationController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
-        } catch (BadCredentialsException ex) {
-            throw new Exception("Incorrect username or password", ex);
+        } catch (BadCredentialsException exception) {
+            throw new BadRequestException("Incorrect username or password");
         }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);

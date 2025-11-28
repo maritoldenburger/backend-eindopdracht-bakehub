@@ -45,34 +45,8 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/auth/login").permitAll()
                                 .requestMatchers("/auth/user").authenticated()
-
-                                // Categories
-                                .requestMatchers(HttpMethod.GET, "/categories", "/categories/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/categories").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/categories/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/categories/**").hasRole("ADMIN")
-
-                                // Recipes
-                                .requestMatchers(HttpMethod.GET, "/recipes", "/recipes/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/recipes/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/recipes/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/recipes/**").hasRole("ADMIN")
-
-                                // Ingredients
-                                .requestMatchers(HttpMethod.GET, "/ingredients", "/ingredients/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/ingredients/recipes/*").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/ingredients/*").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/ingredients/*").hasRole("ADMIN")
-
-                                // Reviews
-                                .requestMatchers(HttpMethod.GET, "/recipes/*/reviews").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/recipes/*/reviews").authenticated()
-                                .requestMatchers(HttpMethod.DELETE, "/recipes/*/reviews/*").authenticated()
-
-                                // Favorites
-                                .requestMatchers("/users/*/favorites/**").authenticated()
+                                .requestMatchers("/auth/**").permitAll()
 
                                 // Users
                                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
@@ -80,6 +54,32 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/users/**").authenticated()
                                 .requestMatchers(HttpMethod.PUT, "/users/**").authenticated()
                                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
+
+                                // Categories
+                                .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/categories").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/categories/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/categories/**").hasRole("ADMIN")
+
+                                // Recipes
+                                .requestMatchers(HttpMethod.GET, "/recipes/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/recipes/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/recipes/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/recipes/**").hasRole("ADMIN")
+
+                                // Ingredients
+                                .requestMatchers(HttpMethod.GET, "/ingredients/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/ingredients/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/ingredients/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/ingredients/**").hasRole("ADMIN")
+
+                                // Reviews
+                                .requestMatchers(HttpMethod.GET, "/recipes/*/reviews/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/recipes/*/reviews").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/recipes/*/reviews/*").authenticated()
+
+                                // Favorites
+                                .requestMatchers("/users/*/favorites/**").authenticated()
 
                                 .anyRequest().denyAll()
                 )

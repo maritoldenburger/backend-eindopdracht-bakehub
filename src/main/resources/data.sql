@@ -1,13 +1,13 @@
 -- elk wachtwoord is test123
 
 INSERT INTO users (username, email, password)
-VALUES ('annie_ananas', 'annieananas@bakehub.com', '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W'),
-       ('bobbybanaan', 'bobbiebanaan@bakehub.com', '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W'),
+VALUES ('annie_ananas', 'annieananas@bakehub.com', '$2a$12$BRfIoNx9b8/DRQBL15rS5.iR98UfnsAdDadJ9sdxtm4kLju8Ptxn6'),
+       ('bobbybanaan', 'bobbiebanaan@bakehub.com', '$2a$12$BRfIoNx9b8/DRQBL15rS5.iR98UfnsAdDadJ9sdxtm4kLju8Ptxn6'),
        ('wendywatermeloen', 'wendywatermeloen@bakehub.com',
-        '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W'),
-       ('lolalimoen95', 'lolalimoen@bakehub.com', '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W'),
-       ('fredframb00s', 'fredframboos@bakehub.com', '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W'),
-       ('brambrownie', 'brambrownie@bakehub.com', '$2a$10$N9qo8uLOickgx2ZXn7BYCu1PJXdi8TLEbk6LUqHGLvGKlzlqJ7x0W');
+        '$2a$12$BRfIoNx9b8/DRQBL15rS5.iR98UfnsAdDadJ9sdxtm4kLju8Ptxn6'),
+       ('lolalimoen95', 'lolalimoen@bakehub.com', '$2a$12$BRfIoNx9b8/DRQBL15rS5.iR98UfnsAdDadJ9sdxtm4kLju8Ptxn6'),
+       ('fredframb00s', 'fredframboos@bakehub.com', '$2a$12$BRfIoNx9b8/DRQBL15rS5.iR98UfnsAdDadJ9sdxtm4kLju8Ptxn6'),
+       ('brambrownie', 'brambrownie@bakehub.com', '$2a$12$BRfIoNx9b8/DRQBL15rS5.iR98UfnsAdDadJ9sdxtm4kLju8Ptxn6');
 
 INSERT INTO authorities (username, authority)
 VALUES ('annie_ananas', 'USER'),
