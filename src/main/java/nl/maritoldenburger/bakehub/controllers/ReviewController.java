@@ -6,6 +6,7 @@ import nl.maritoldenburger.bakehub.services.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -26,9 +27,14 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
-    @PostMapping
-    public ResponseEntity<ReviewDto> addReview(@PathVariable Long recipeId, @RequestBody ReviewInputDto reviewInputDto, Principal principal) {
-        ReviewDto savedReview = reviewService.addReview(principal.getName(), recipeId, reviewInputDto);
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<ReviewDto> addReview(
+            @PathVariable Long recipeId,
+            @RequestPart("review") ReviewInputDto reviewInputDto,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            Principal principal
+    ) {
+        ReviewDto savedReview = reviewService.addReview(principal.getName(), recipeId, reviewInputDto, image);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedReview);
     }
 
