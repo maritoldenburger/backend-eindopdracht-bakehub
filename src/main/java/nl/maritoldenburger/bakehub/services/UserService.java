@@ -4,6 +4,7 @@ import nl.maritoldenburger.bakehub.dtos.user.UserDto;
 import nl.maritoldenburger.bakehub.dtos.user.UserInputDto;
 import nl.maritoldenburger.bakehub.enums.Role;
 import nl.maritoldenburger.bakehub.exceptions.AlreadyExistsException;
+import nl.maritoldenburger.bakehub.exceptions.BadRequestException;
 import nl.maritoldenburger.bakehub.exceptions.RecordNotFoundException;
 import nl.maritoldenburger.bakehub.mappers.UserMapper;
 import nl.maritoldenburger.bakehub.models.Authority;
@@ -37,18 +38,20 @@ public class UserService {
         return dtoUsers;
     }
 
-    public UserDto getUserById(Long id) {
+    public UserDto getUserById(String username, Long id) {
 
-        User user = userRepository.findById(id)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RecordNotFoundException("User " + id + " not found"));
 
+        if (!user.getId().equals(id)) {
+            throw new BadRequestException("You can only view your own profile");
+        }
         return UserMapper.toDto(user);
     }
 
     public UserDto getUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RecordNotFoundException("User " + username + " not found"));
-
         return UserMapper.toDto(user);
     }
 
@@ -71,10 +74,14 @@ public class UserService {
         return UserMapper.toDto(savedUser);
     }
 
-    public UserDto updateUser(Long id, UserInputDto userInputDto) {
+    public UserDto updateUser(String username, Long id, UserInputDto userInputDto) {
 
-        User user = userRepository.findById(id)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RecordNotFoundException("User " + id + " not found"));
+
+        if (!user.getId().equals(id)) {
+            throw new BadRequestException("You can only update your own profile");
+        }
 
         user.setUsername(userInputDto.username);
         user.setEmail(userInputDto.email);

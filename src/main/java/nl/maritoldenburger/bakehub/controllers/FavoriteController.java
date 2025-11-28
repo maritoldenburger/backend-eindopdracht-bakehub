@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -20,8 +21,8 @@ public class FavoriteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteDto>> getFavoritesByUser(@PathVariable Long userId) {
-        List<FavoriteDto> favorites = favoriteService.getFavoritesByUser(userId);
+    public ResponseEntity<List<FavoriteDto>> getFavoritesByUser(@PathVariable Long userId, Principal principal) {
+        List<FavoriteDto> favorites = favoriteService.getFavoritesByUser(principal.getName(), userId);
         return ResponseEntity.ok(favorites);
     }
 
@@ -32,8 +33,8 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFavorite(@PathVariable Long id) {
-        favoriteService.deleteFavorite(id);
+    public ResponseEntity<Void> deleteFavorite(@PathVariable Long id, Principal principal) {
+        favoriteService.deleteFavorite(id, principal.getName());
         return ResponseEntity.noContent().build();
     }
 }

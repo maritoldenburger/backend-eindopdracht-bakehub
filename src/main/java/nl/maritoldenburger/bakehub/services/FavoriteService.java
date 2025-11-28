@@ -3,6 +3,7 @@ package nl.maritoldenburger.bakehub.services;
 import nl.maritoldenburger.bakehub.dtos.favorite.FavoriteDto;
 import nl.maritoldenburger.bakehub.dtos.favorite.FavoriteInputDto;
 import nl.maritoldenburger.bakehub.exceptions.AlreadyExistsException;
+import nl.maritoldenburger.bakehub.exceptions.BadRequestException;
 import nl.maritoldenburger.bakehub.exceptions.RecordNotFoundException;
 import nl.maritoldenburger.bakehub.mappers.FavoriteMapper;
 import nl.maritoldenburger.bakehub.models.Favorite;
@@ -30,10 +31,14 @@ public class FavoriteService {
         this.recipeRepository = recipeRepository;
     }
 
-    public List<FavoriteDto> getFavoritesByUser(Long userId) {
+    public List<FavoriteDto> getFavoritesByUser(String username, Long userId) {
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RecordNotFoundException("User " + userId + " not found"));
+
+        if (!user.getId().equals(userId)) {
+            throw new BadRequestException("You can only view your own favorites");
+        }
 
         List<FavoriteDto> dtoFavorites = new ArrayList<>();
 
@@ -63,10 +68,15 @@ public class FavoriteService {
         return FavoriteMapper.toDto(savedFavorite);
     }
 
-    public void deleteFavorite(Long id) {
+    public void deleteFavorite(Long id, String username) {
 
         Favorite favorite = favoriteRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Favorite " + id + " not found"));
+
+        if (!favorite.getUser().getUsername().equals(username)) {
+            throw new BadRequestException("You can only delete your own favorites");
+        }
+
         favoriteRepository.delete(favorite);
     }
 }
