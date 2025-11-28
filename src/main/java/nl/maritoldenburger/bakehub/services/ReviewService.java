@@ -11,8 +11,13 @@ import nl.maritoldenburger.bakehub.models.User;
 import nl.maritoldenburger.bakehub.repositories.RecipeRepository;
 import nl.maritoldenburger.bakehub.repositories.ReviewRepository;
 import nl.maritoldenburger.bakehub.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +28,9 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
     private final RecipeService recipeService;
+
+    @Value("${my.upload_location}")
+    private String uploadLocation;
 
     public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, RecipeRepository recipeRepository, RecipeService recipeService) {
         this.reviewRepository = reviewRepository;
@@ -44,7 +52,7 @@ public class ReviewService {
         return dtoReviews;
     }
 
-    public ReviewDto addReview(String username, Long recipeId, ReviewInputDto reviewInputDto) {
+    public ReviewDto addReview(String username, Long recipeId, ReviewInputDto reviewInputDto, MultipartFile image) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RecordNotFoundException("User " + username + " not found"));
 
@@ -52,6 +60,19 @@ public class ReviewService {
                 .orElseThrow(() -> new RecordNotFoundException("Recipe " + recipeId + " not found"));
 
         Review review = ReviewMapper.toEntity(reviewInputDto, user, recipe);
+
+        if (image != null && !image.isEmpty()) {
+            try {
+                Files.createDirectories(Path.of(uploadLocation));
+                String filename = image.getOriginalFilename();
+                Path path = Path.of(uploadLocation + "/" + filename);
+                Files.copy(image.getInputStream(), path);
+                review.setImageUrl("/uploads/" + filename);
+            } catch (IOException exception) {
+                throw new RuntimeException("Unable to save image", exception);
+            }
+        }
+
         Review savedReview = reviewRepository.save(review);
 
         recipeService.updateRecipeRating(recipe);
