@@ -40,7 +40,8 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
-    public Recipe() {}
+    public Recipe() {
+    }
 
     public Recipe(String name, String imageUrl, String description, String instructions, int servings, int preparationTime, Double rating) {
         this.name = name;
@@ -54,6 +55,10 @@ public class Recipe {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

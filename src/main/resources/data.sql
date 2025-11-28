@@ -123,6 +123,19 @@ VALUES ('bladerdeeg', 2, NULL, 5),
        ('gegrilde paprika', 1, NULL, 5),
        ('gegrilde courgette', 1, NULL, 5);
 
+INSERT INTO recipes (name, image_url, description, instructions, servings, preparation_time, rating, category_id)
+VALUES ('Testbrood',
+        NULL,
+        'Een testbrood.',
+        'Schrijf een test.',
+        12,
+        60,
+        4,
+        4);
+
+INSERT INTO ingredients (name, quantity, unit, recipe_id)
+VALUES ('bloem', 150, 'GRAM', 6);
+
 INSERT INTO reviews (rating, comment, image_url, user_id, recipe_id)
 VALUES (5, 'Superromig en precies zoet genoeg. Echt een favoriet!', NULL, 1, 1),
        (4, 'Heel lekker! De bodem mocht iets steviger.', NULL, 3, 1),
