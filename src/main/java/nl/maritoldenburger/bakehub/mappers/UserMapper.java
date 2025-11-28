@@ -22,7 +22,7 @@ public class UserMapper {
         userDto.id = user.getId();
         userDto.username = user.getUsername();
         userDto.email = user.getEmail();
-        userDto.role = user.getRole();
+        userDto.authorities = user.getAuthorities();
 
         return userDto;
     }

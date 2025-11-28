@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -26,8 +27,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
-        UserDto user = userService.getUserById(id);
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id, Principal principal) {
+        UserDto user = userService.getUserById(principal.getName(), id);
         return ResponseEntity.ok(user);
     }
 
@@ -38,8 +39,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserInputDto userInputDto, @PathVariable Long id) {
-        UserDto updatedUser = userService.updateUser(id, userInputDto);
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserInputDto userInputDto, @PathVariable Long id, Principal principal) {
+        UserDto updatedUser = userService.updateUser(principal.getName(), id, userInputDto);
         return ResponseEntity.ok(updatedUser);
     }
 

@@ -2,6 +2,7 @@ package nl.maritoldenburger.bakehub.services;
 
 import nl.maritoldenburger.bakehub.dtos.review.ReviewDto;
 import nl.maritoldenburger.bakehub.dtos.review.ReviewInputDto;
+import nl.maritoldenburger.bakehub.exceptions.BadRequestException;
 import nl.maritoldenburger.bakehub.exceptions.RecordNotFoundException;
 import nl.maritoldenburger.bakehub.mappers.ReviewMapper;
 import nl.maritoldenburger.bakehub.models.Recipe;
@@ -43,9 +44,9 @@ public class ReviewService {
         return dtoReviews;
     }
 
-    public ReviewDto addReview(Long userId, Long recipeId, ReviewInputDto reviewInputDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RecordNotFoundException("User " + userId + " not found"));
+    public ReviewDto addReview(String username, Long recipeId, ReviewInputDto reviewInputDto) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RecordNotFoundException("User " + username + " not found"));
 
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecordNotFoundException("Recipe " + recipeId + " not found"));
@@ -58,9 +59,13 @@ public class ReviewService {
         return ReviewMapper.toDto(savedReview);
     }
 
-    public void deleteReview(Long id) {
+    public void deleteReview(Long id, String username) {
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Review " + id + " not found"));
+
+        if (!review.getUser().getUsername().equals(username)) {
+            throw new BadRequestException("You can only delete your own reviews");
+        }
 
         Recipe recipe = review.getRecipe();
 

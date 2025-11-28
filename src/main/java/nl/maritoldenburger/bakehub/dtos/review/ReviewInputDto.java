@@ -15,8 +15,4 @@ public class ReviewInputDto {
     public String comment;
 
     public String imageUrl;
-
-    public Long userId;
-
-    public Long recipeId;
 }

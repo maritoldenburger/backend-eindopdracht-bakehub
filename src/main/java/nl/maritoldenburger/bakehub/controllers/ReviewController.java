@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -26,14 +27,14 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ReviewDto> addReview(@PathVariable Long recipeId, @RequestBody ReviewInputDto reviewInputDto) {
-        ReviewDto savedReview = reviewService.addReview(reviewInputDto.userId, recipeId, reviewInputDto);
+    public ResponseEntity<ReviewDto> addReview(@PathVariable Long recipeId, @RequestBody ReviewInputDto reviewInputDto, Principal principal) {
+        ReviewDto savedReview = reviewService.addReview(principal.getName(), recipeId, reviewInputDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedReview);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
-        reviewService.deleteReview(id);
+    public ResponseEntity<Void> deleteReview(@PathVariable Long id, Principal principal) {
+        reviewService.deleteReview(id, principal.getName());
         return ResponseEntity.noContent().build();
     }
 }

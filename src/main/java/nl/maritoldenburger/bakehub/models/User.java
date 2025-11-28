@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import nl.maritoldenburger.bakehub.enums.Role;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -24,8 +26,13 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    @OneToMany(
+            targetEntity = Authority.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER)
+    @JoinColumn(name = "username", referencedColumnName = "username")
+    private Set<Authority> authorities = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();
@@ -37,7 +44,6 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = role;
     }
 
     public Long getId() {
@@ -68,12 +74,16 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
+    public Set<Authority> getAuthorities() {
+        return authorities;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void addAuthority(Authority authority) {
+        this.authorities.add(authority);
+    }
+
+    public void removeAuthority(Authority authority) {
+        this.authorities.remove(authority);
     }
 
     public List<Favorite> getFavorites() {
