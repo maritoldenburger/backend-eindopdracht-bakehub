@@ -8,7 +8,7 @@
 4. [Benodigdheden](#Benodigdheden)
 5. [Installatie](#Installatie)
 6. [Tests](#Tests)
-7. [Gebruikers](#Standaard-gebruikers)
+7. [Standaard gebruikers](#Standaard-gebruikers)
 
 ## Inleiding
 
@@ -133,3 +133,4 @@ De volgende gebruikers zijn beschikbaar voor het testen van de web-API:
 | ADMIN  | wendywatermeloen  | test123  |
 | ADMIN  | fredframb00s  | test123  |
 | ADMIN  | brambrownie  | test123  |
+
