@@ -17,8 +17,6 @@ VALUES ('annie_ananas', 'USER'),
        ('fredframb00s', 'ADMIN'),
        ('brambrownie', 'ADMIN');
 
-INSERT INTO authorities (username, authority) VALUES ('annaadmin', 'ADMIN');
-
 INSERT INTO categories (name, description, image_url)
 VALUES ('taart',
         'Of je nu aan de slag wilt met een klassieke appeltaart, een frisse citroenkwarktaart of gewoon een simpele chocoladetaart, hier vind je volop inspiratie. Perfect voor verjaardagen, een high tea of gewoon omdat je er zin in hebt!',

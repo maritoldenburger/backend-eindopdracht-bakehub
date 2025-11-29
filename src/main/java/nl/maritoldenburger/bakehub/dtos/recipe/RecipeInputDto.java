@@ -30,9 +30,6 @@ public class RecipeInputDto {
     @Max(value = 1440, message = "Preparation time can't exceed 24 hours")
     public int preparationTime;
 
-    @NotNull(message = "Category is required")
-    public Long categoryId;
-
     @Valid
     @NotEmpty(message = "At least 1 ingredient is required")
     public List<IngredientInputDto> ingredients;
